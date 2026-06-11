@@ -1,0 +1,189 @@
+from pathlib import Path
+import numpy as np
+import torch
+from .general_config import *
+
+# =========================================================
+# DATA PATHS
+# =========================================================
+DATA_DIR = REPO_ROOT / "imitation" / "data"
+EXPERT_DIR = DATA_DIR / "expert_demos"
+MANUAL_DIR = DATA_DIR / "demos"
+PROCESSED_DIR = DATA_DIR / "processed"
+
+AUTOPILOT_RECORD_DIR = EXPERT_DIR / "map1_0car"
+MANUAL_RECORD_DIR =  MANUAL_DIR / "map1_30car"
+
+DISCRETE_DATASET_PATH = PROCESSED_DIR / "dataset_bc_discrete.npz"
+CONTINUOUS_DATASET_PATH = PROCESSED_DIR / "dataset_bc_continuous.npz"
+
+
+BC_EXPERIMENT_FOLDER = REPO_ROOT / "experiments" / "bc"
+
+
+# input of build dataset and inspect demo
+DEMO_LIST= [
+    # EXPERT_DIR / "town01_0car",
+    # MANUAL_DIR / "lab-map_0car",
+    # MANUAL_DIR / "test",
+    # MANUAL_DIR / "map1_0car",
+    MANUAL_DIR / "map1_30car",
+    # REPO_ROOT / "offline_rl" / "data"
+]
+
+
+# =========================================================
+# ACTION SPACE
+# =========================================================
+ACTION_MODE = "continuous"   # "discrete" or "continuous"
+IS_GAUSSIAN = False  #TODO: this has a bug and i was too lazy to debug , dont activate it unless you fixed the bug the bug is in training script and imitation policy 
+MIN_STD=0.05
+MAX_STD=1
+SMOOTH_STEERING = False
+
+SPEED_MAP = {
+    0: "Accelerate",
+    1: "Brake",
+    2: "Stop",
+    3: "Reverse",
+    4: "Constant",
+}
+
+TURN_MAP = {
+    0: "Right",
+    1: "Left",
+    2: "No Turn",
+    3: "Straight",
+}
+
+# =========================================================
+# ACTION SIMPLIFICATION
+# =========================================================
+SIMPLIFY_ACTIONS = True
+REMOVE_REVERSE = True
+REMOVE_NO_TURN = True
+
+SIMPLIFY_SPEED_MAP = {
+    0: "Accelerate",
+    1: "Brake",
+    2: "Stop",
+    3: "Constant",
+}
+
+SIMPLIFY_TURN_MAP = {
+    0: "Right",
+    1: "Left",
+    2: "Straight",
+}
+
+
+
+# =========================================================
+# DATASET SETTINGS
+# =========================================================
+DROP_TERMINATED = True
+DROP_LAST_N_BEFORE_TERMINATION = 100
+
+FILTER_IDLE_FRAMES = False
+IDLE_FILTER_MODE = "all"
+
+IDLE_SPEED_THRESHOLD = 0.3
+IDLE_THROTTLE_THRESHOLD = 0.05
+IDLE_BRAKE_THRESHOLD = 0.05
+
+JOINT_KEEP_PROBS = {
+    (4, 3): 0.3,
+    (4, 0): 0.5,
+    (4, 1): 0.8,
+}
+
+# JOINT_KEEP_PROBS = {
+#     (4, 3): 1,
+#     (4, 0): 1,
+#     (4, 1): 1,
+# }
+
+
+# 'min_max': Scale features to [-1, 1] based on dataset-wide min/max.
+# 'z_score': Standardize features using dataset-wide mean/std.
+# 'fixed':   Divide speed grids by MAX_SPEED. Scalars are not normalized. (Less recommended)
+SCALING_METHOD = "z_score"
+MAX_SPEED = 30.0
+
+
+USE_CONTINUOUS_UNDERSAMPLING = False
+UNDERSAMPLING_THRESHOLD = 0.05      # Absolute steering value below which is "straight"
+UNDERSAMPLING_PROBABILITY = 0.6     # 60% chance to drop straight samples if flag is True
+
+
+USE_WEIGHTED_LOSS = False
+STEER_LOSS_WEIGHT = 3.0             # Multiplier for loss when steering error is large
+THROTTLE_LOSS_WEIGHT = 1.0
+BRAKE_LOSS_WEIGHT = 1.0
+WEIGHTED_LOSS_THRESHOLD = 0.1       # Threshold above which the weight is applied
+
+WEIGHTED_SAMPLING = "none" # "inverse" or "none" or "handmade"
+
+
+
+
+# ================================
+# Dataset Augmentation
+# ================================
+MIRROR_DATASET = False
+MIRROR_STEERING_THRESHOLD = 0.04
+
+
+
+# =========================================================
+# IMITATION LEARNING TRAINING
+# =========================================================
+BC_EPOCHS = 30
+BC_BATCH_SIZE = 512
+BC_LR = 3e-4
+BC_VAL_SPLIT = 0.1
+BC_PATIENCE = 10
+
+# =========================================================
+# MANUAL CONTROL / DEMO RECORDING
+# =========================================================
+MANUAL_SLEEP_SECONDS = 0.001
+MANUAL_PRINT_EVERY = 500
+MANUAL_DEBUG_GRIDS = False
+
+MANUAL_RECORD = False
+MANUAL_BASE_NAME = "map1"
+
+RECORD_DRIVE_MODE = "manual" # "manual" or "autopilot"
+
+DEFAULT_AUTOPILOT_EPISODES = 1000
+AUTOPILOT_DEMO_BASENAME = "autopilot_map1"
+
+
+# =========================================================
+# POLICY EVALUATION / ROLLOUT
+# =========================================================
+EVAL_NUM_EPISODES = 20
+EVAL_MAX_STEPS = 2000
+EVAL_RENDER_LOG_EVERY = 200
+RECORD_BC_EVAL_VID = False
+RECORD_MODEL = True
+
+# =========================================================
+# DEBUG / VISUALIZATION
+# =========================================================
+DEBUG_PRINT_STEPS = 0
+
+INSPECT_VISUALIZE = True
+MAX_INSPECT_FEATURE_SAMPLES = 200000
+
+BUILD_VISUALIZE = False
+FEATURE_HIST_MAX_SAMPLES = 100000
+
+# =========================================================
+# Action Collapse Thresholds
+# =========================================================
+MIN_STEER_VAR = 0.005
+MIN_THROTTLE_VAR = 0.001 
+MIN_BRAKE_VAR = 0.001
+
