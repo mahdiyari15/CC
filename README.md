@@ -50,4 +50,7 @@ python -m main.run_rl
 Hyper-parameters live in `config/`.
 
 ---
-Part of the **UT-Car** autonomous-driving project at the University of Tehran.
+Part of the **UT-Car** autonomous-driving project at the University of Tehran (supervisor: Dr. M. Modarressi).
+This repository is a snapshot of the SAC / behaviour-cloning part. The full team repository, including
+the IQL and AWAC offline-RL training, PPO with a BC loss and DAgger, is
+[ArianFiroozi/Carla-Integration-Modules](https://github.com/ArianFiroozi/Carla-Integration-Modules).
